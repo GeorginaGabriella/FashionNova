@@ -11,6 +11,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     return view('products.index');
@@ -53,6 +54,10 @@ Route::middleware('auth')->group(function () {
 
     // ORDERS
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+    // PAYMENT
+    Route::get( '/payments/create/{orderId}', [PaymentController::class, 'create'] )->name('payments.create');
+    Route::post( '/payments', [PaymentController::class, 'store'] )->name('payments.store');
 });
 
 // PUBLIC RESOURCE
