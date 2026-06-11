@@ -13,6 +13,10 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\NotificationController;
+
 Route::get('/', function () {
     return view('products.index');
 })->name('home');
@@ -58,6 +62,29 @@ Route::middleware('auth')->group(function () {
     // PAYMENT
     Route::get( '/payments/create/{orderId}', [PaymentController::class, 'create'] )->name('payments.create');
     Route::post( '/payments', [PaymentController::class, 'store'] )->name('payments.store');
+});
+
+// NOTIFICATIONS
+Route::get('/notifications', [NotificationController::class, 'index'])
+    ->name('notifications.index');
+
+// ADMIN
+Route::middleware([
+    'auth',
+    \App\Http\Middleware\AdminMiddleware::class
+])->prefix('admin')->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
+
+    Route::get('/orders', [AdminOrderController::class, 'index'])
+        ->name('admin.orders');
+
+    Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])
+        ->name('admin.orders.status');
+
+    Route::post('/orders/{id}/resi', [AdminOrderController::class, 'inputResi'])
+        ->name('admin.orders.resi');
 });
 
 // PUBLIC RESOURCE
